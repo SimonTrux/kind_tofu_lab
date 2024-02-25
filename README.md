@@ -14,9 +14,9 @@
 To run the cluster
 ```bash
 # To start it
-kind create cluster --config ./cluster/01_1c2w.yml # --name c1
+kind create cluster --config ./cluster/01_1c2w.yml # --name c1 # if not in config file
 # To delete it
-kind delete clusters c1
+kind delete clusters cluster1
 ```
 ## Adding services
 
