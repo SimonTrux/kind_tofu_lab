@@ -13,8 +13,12 @@
 
 To run the cluster
 ```bash
+# sysctl requirements (see troubleshooting)
+sudo sysctl fs.inotify.max_user_watches=524288 ; sudo sysctl fs.inotify.max_user_instances=512
+
 # To start it
 kind create cluster --config ./cluster/01_1c2w.yml # --name c1 # if not in config file
+
 # To delete it
 kind delete clusters cluster1
 ```
@@ -81,3 +85,19 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 ```
 
 
+## Troubleshooting
+
+### Pod errors due to “too many open files”
+
+This may be caused by running out of inotify resources. Resource limits are defined by fs.inotify.max_user_watches and fs.inotify.max_user_instances system variables. For example, in Ubuntu these default to 8192 and 128 respectively, which is not enough to create a cluster with many nodes.
+
+```bash
+#To increase these limits temporarily run the following commands on the host:
+
+sudo sysctl fs.inotify.max_user_watches=524288
+sudo sysctl fs.inotify.max_user_instances=512
+
+#To make the changes persistent, edit the file /etc/sysctl.conf and add these lines:
+fs.inotify.max_user_watches = 524288
+fs.inotify.max_user_instances = 512
+```
